@@ -1,90 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
+    android:layout_margin="5dp">
 
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_above="@+id/info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        >
 
-        <LinearLayout
-            android:id="@+id/root"
+        <ScrollView
+            android:id="@+id/outerSc"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="20dp"
-            tools:context=".MainActivity">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/label"
-                style="@style/Main_Label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name" />
-
-            <TextView
-                android:id="@+id/oled_only"
-                style="@style/Label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/oled" />
-
-            <TextView
-                android:id="@+id/security"
-                style="@style/Label"
+            <LinearLayout
+                android:id="@+id/root"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/security" />
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="20dp"
+                tools:context=".MainActivity">
 
-            <TextView
-                android:id="@+id/tint_available"
-                style="@style/Label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/how_to_use" />
+                <TextView
+                    android:id="@+id/label"
+                    style="@style/Main_Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_name" />
 
-            <TextView
-                android:id="@+id/burning"
-                style="@style/Label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/burning" />
+                <ScrollView
+                    android:id="@+id/innerSc"
+                    android:layout_width="match_parent"
+                    android:layout_height="132sp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp">
 
-            <ImageButton
-                android:id="@+id/color_circle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="5dp"
-                android:background="@android:color/transparent" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
 
-            <SeekBar
-                android:id="@+id/size_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:padding="10dp"
-                android:scrollbarStyle="outsideInset" />
+                        <TextView
+                            android:id="@+id/advices"
+                            style="@style/Label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="" />
+                    </LinearLayout>
+                </ScrollView>
 
-            <Button
-                android:id="@+id/start"
-                style="@style/Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:text="@string/start"
-                android:textColor="@android:color/black" />
+                <ImageButton
+                    android:id="@+id/color_circle"
+                    android:contentDescription="Open change color dialog"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="10dp"
+                    android:background="@android:color/transparent" />
 
-            <Button
-                android:id="@+id/start_activity"
-                style="@style/Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/startAsActivity" />
+                <SeekBar
+                    android:id="@+id/size_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:padding="10dp"
+                    android:scrollbarStyle="outsideInset" />
 
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+                <Button
+                    android:id="@+id/start"
+                    style="@style/Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:text="@string/start"
+                    android:textColor="@android:color/black" />
+
+                <Button
+                    android:id="@+id/start_activity"
+                    style="@style/Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/startAsActivity" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center|center"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/share"
+                        android:contentDescription="Shares the app"
+                        style="@style/Icons"
+                        android:layout_width="@dimen/icon_size"
+                        android:layout_height="@dimen/icon_size"
+                        app:srcCompat="@drawable/share" />
+
+                    <ImageButton
+                        android:id="@+id/facebook"
+                        android:contentDescription="Opens apps Facebook"
+                        style="@style/Icons"
+                        android:layout_width="@dimen/icon_size"
+                        android:layout_height="@dimen/icon_size"
+                        app:srcCompat="@drawable/facebook" />
+
+                    <ImageButton
+                        android:id="@+id/github"
+                        android:contentDescription="Opens apps sourcecode on Github"
+                        style="@style/Icons"
+                        android:layout_width="@dimen/icon_size"
+                        android:layout_height="@dimen/icon_size"
+                        app:srcCompat="@drawable/github" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/info"
+        style="@style/Label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:text="version 0.0 000 by Lašťa apps 2000"
+        android:textColor="@android:color/darker_gray"/>
+</RelativeLayout>

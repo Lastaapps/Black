@@ -4,26 +4,35 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
+
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,6 +49,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_main);
+
+        initIcons();
+        ((TextView)findViewById(R.id.info)).setText(getString(R.string.version) + ": " +
+                BuildConfig.VERSION_NAME + "  " +
+                new DecimalFormat("000").format(BuildConfig.VERSION_CODE) + "  " +
+                getString(R.string.company_name) + "  " +
+                new SimpleDateFormat("yyyy").format(BuildConfig.BUILD_TIME));
 
         findViewById(R.id.color_circle).setOnClickListener(new View.OnClickListener() {
             int lastColor = FloatingService.getColor();
@@ -104,8 +120,34 @@ public class MainActivity extends AppCompatActivity {
 
         initSizeBar();
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
-            findViewById(R.id.tint_available).setVisibility(View.GONE);
+        String[] advicesList = getResources().getStringArray(R.array.advices);
+        String advice = "";
+
+        for (String s : advicesList) {
+            advice += s;
+            advice += "\n\n";
+        }
+
+        ((TextView)findViewById(R.id.advices)).setText(advice);
+
+        findViewById(R.id.innerSc).setOnTouchListener(new View.OnTouchListener() {
+
+            public boolean onTouch(View v, MotionEvent event) {
+                ((ScrollView)findViewById(R.id.outerSc))
+                        .requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
+
+        findViewById(R.id.outerSc).setOnTouchListener(new View.OnTouchListener() {
+
+            public boolean onTouch(View v, MotionEvent event) {
+                ((ScrollView)findViewById(R.id.innerSc))
+                        .requestDisallowInterceptTouchEvent(false);
+                return false;
+            }
+        });
+
 
         new AsyncTask<Object, Object, Object>(){
             @Override
@@ -129,14 +171,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void initSizeBar() {
         SeekBar bar = findViewById(R.id.size_bar);
-        bar.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+        bar.getProgressDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
         if (Build.VERSION.SDK_INT >= 16)
-            bar.getThumb().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+            bar.getThumb().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
 
         Point scSize = getScreenSize(this);
         final int smaller = Math.min(scSize.x, scSize.y);
 
-        final int min = (int)(smaller * 0.1), max = (int)(smaller * 0.4);
+        final int min = (int)(smaller * 0.05), max = (int)(smaller * 0.3);
         int progress = getSize(this);
         progress = progress > max ? max : progress;
 
@@ -148,7 +190,6 @@ public class MainActivity extends AppCompatActivity {
                 if (fromUser) {
                     progress += min;
                     setSize(MainActivity.this, progress);
-                    System.out.println(progress);
                     updateCanvas();
                 }
             }
@@ -161,9 +202,40 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void initIcons() {
+        findViewById(R.id.share).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        findViewById(R.id.facebook).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = "https://www.facebook.com/lastaapps/";
+                Uri uri = Uri.parse(url);
+                try {
+                    ApplicationInfo applicationInfo = getPackageManager().getApplicationInfo("com.facebook.katana", 0);
+                    if (applicationInfo.enabled) {
+                        uri = Uri.parse("fb://facewebmodal/f?href=" + url);
+                    }
+                } catch (PackageManager.NameNotFoundException ignored) {}
+
+                startActivity(new Intent(Intent.ACTION_VIEW, uri));
+            }
+        });
+        findViewById(R.id.github).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Lastaapps/Black")));
+            }
+        });
+    }
+
     public void updateCanvas() {
         int size = getSize(this);
-        Bitmap map = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+        float rSize = 2 * size;
+        Bitmap map = Bitmap.createBitmap((int)rSize, (int)rSize, Bitmap.Config.ARGB_8888);
 
         Paint main = new Paint(0);
         main.setStyle(Paint.Style.FILL);
@@ -174,8 +246,8 @@ public class MainActivity extends AppCompatActivity {
         circ.setColor(Color.WHITE);
 
         Canvas c = new Canvas(map);
-        c.drawCircle(size/2, size/2, size/2, circ);
-        c.drawCircle(size/2, size/2, size/2 - (size/8), main);
+        c.drawCircle(rSize/2, rSize/2, rSize/2, circ);
+        c.drawCircle(rSize/2, rSize/2, rSize/2 - (rSize/8), main);
 
         ((ImageView)findViewById(R.id.color_circle)).setImageBitmap(map);
         ((ImageView)findViewById(R.id.color_circle)).getLayoutParams().width = size;

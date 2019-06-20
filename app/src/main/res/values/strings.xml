@@ -2,12 +2,6 @@
     <string name="app_name">Black</string>
     <string name="tile_name">Go black</string>
 
-    <string name="oled">This app can drain your battery when using LCD display.
-    Please make sure, that you have OLED.</string>
-    <string name="how_to_use">You can also use tints in notifications area. Just add it from button list.</string>
-    <string name="security">The phone is NOT locked when the app is in use, so anyone can access it!</string>
-    <string name="burning">To prevent burning OLED displays, do not let any color (except black) on the screen for a longer period of time</string>
-
     <string name="start">Start service</string>
     <string name="startAsActivity">Start in app</string>
     <string name="stop">Stop service</string>
@@ -18,4 +12,18 @@
 
     <string name="expand">Double tap to expand/close</string>
     <string name="close">Double tap to close</string>
+
+    <string name="version">Version</string>
+    <string name="company_name">by Lašťa apps</string>
+
+    <string-array name="advices">
+        <item>Select the ring below to change color</item>
+        <item>Press start service to start overlapping display, tap 2x to expand to whole screen</item>
+        <item>Press start in app to use it as temporary background</item>
+        <item>If the app isn\'t working correctly, please let me know on Facebook below</item>
+        <item>This app can drain your battery when using LCD display. Please make sure, that you have OLED.</item>
+        <item>The phone is NOT locked when the app is in use, so anyone can access it!</item>
+        <item>You can also use tints in notifications area. Just add it from button list.</item>
+        <item>To prevent burning OLED displays, do not let any color (except black) on the screen for a longer period of time</item>
+    </string-array>
 </resources>

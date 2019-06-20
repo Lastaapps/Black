@@ -36,4 +36,18 @@
         <item name="android:padding">10dp</item>
     </style>
 
+    <style name="ImageButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="Icons" parent="ImageButton">
+        <item name="android:maxWidth" >@dimen/icon_size</item>
+        <item name="android:maxHeight">@dimen/icon_size</item>
+        <item name="android:layout_width">@dimen/icon_size</item>
+        <item name="android:layout_height">@dimen/icon_size</item>
+        <item name="android:layout_margin">5dp</item>
+    </style>
+
 </resources>
