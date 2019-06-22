@@ -3,6 +3,7 @@
     package="cz.lastaapps.black">
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.app.admin.USES_POLICY_FORCE_LOCK" />
 
     <application
         android:name=".App"
@@ -26,7 +27,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".PermissionActivity" />
+        <activity android:name=".OverlayPermissionActivity" />
 
         <service android:name=".FloatingService" />
         <service
@@ -46,6 +47,20 @@
                 android:value="true" /
             -->
         </service>
+
+        <activity android:name=".autolock.LockPermissionActivity"/>
+
+        <receiver
+            android:name=".autolock.Darclass"
+            android:permission="android.permission.BIND_DEVICE_ADMIN" >
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/my_admin" />
+
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

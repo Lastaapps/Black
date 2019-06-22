@@ -73,6 +73,22 @@
                     android:padding="10dp"
                     android:scrollbarStyle="outsideInset" />
 
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/lock_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:thumb="@drawable/switcher_thumb"
+                    app:track="@drawable/switcher_track"
+                    android:text="@string/auto_lock"
+                    android:textColor="#FFF"/>
+
                 <Button
                     android:id="@+id/start"
                     style="@style/Button"
@@ -114,7 +130,7 @@
 
                     <ImageButton
                         android:id="@+id/github"
-                        android:contentDescription="Opens apps sourcecode on Github"
+                        android:contentDescription="Opens apps source code on Github"
                         style="@style/Icons"
                         android:layout_width="@dimen/icon_size"
                         android:layout_height="@dimen/icon_size"
@@ -134,6 +150,7 @@
         android:layout_margin="5dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:text="version 0.0 000 by Lašťa apps 2000"
+        android:text="version 0.0 000 Lašťa apps 2000"
         android:textColor="@android:color/darker_gray"/>
+
 </RelativeLayout>

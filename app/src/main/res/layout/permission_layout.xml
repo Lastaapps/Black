@@ -14,14 +14,16 @@
         style="@style/Main_Label"/>
 
     <TextView
+        android:id="@+id/message"
         style="@style/Label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:text="@string/permission" />
+        android:text="@string/permission_overlay" />
 
     <Button
         android:id="@+id/got_it"
+        style="@style/Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/got_it" />

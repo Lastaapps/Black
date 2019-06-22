@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 
-public class PermissionActivity extends Activity {
+public class OverlayPermissionActivity extends Activity {
     /** code to post/handler request for permission */
     public final static int REQUEST_CODE = 1234;
 

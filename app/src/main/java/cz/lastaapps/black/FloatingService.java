@@ -18,14 +18,11 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.provider.Settings;
-import android.support.v4.view.ViewPager;
 import android.telephony.TelephonyManager;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,13 +30,46 @@ import android.widget.Toast;
 
 import java.util.Date;
 
-import static android.view.WindowManager.LayoutParams.*;
+import cz.lastaapps.black.autolock.LockPermissionActivity;
 
 public class FloatingService extends Service {
     WindowManager wm;
     LinearLayout floating, screen, touch;
     BroadcastReceiver receiver;
     int extraPadding = 1000;
+    long fullScreenOpened = 0;
+
+    View.OnTouchListener touchListener = new View.OnTouchListener() {
+        long lastTouch = 0;
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+
+                    long currentTime = System.currentTimeMillis();
+                    if (lastTouch  + 500 > currentTime) {
+                        floating.setVisibility(View.VISIBLE);
+                        screen.setVisibility(View.GONE);
+                        touch.setVisibility(View.GONE);
+
+                        if (MainActivity.isAutoLocking())
+                            if (fullScreenOpened + MainActivity.getLockTime() * 60 * 1000 < System.currentTimeMillis()) {
+                                LockPermissionActivity.lock();
+                            }
+                    }
+                    lastTouch = currentTime;
+
+                    break;
+                default:
+                    break;
+            }
+
+            return false;
+        }
+    };
+
     View.OnKeyListener cancelKey = new View.OnKeyListener() {
         @Override
         public boolean onKey(View v, final int keyCode, final KeyEvent event) {
@@ -62,7 +92,7 @@ public class FloatingService extends Service {
 
         if (Build.VERSION.SDK_INT >= 23) {
             if (Settings.canDrawOverlays(this) == false) {
-                Intent i = new Intent(this, PermissionActivity.class);
+                Intent i = new Intent(this, OverlayPermissionActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
                 stopSelf();
@@ -89,12 +119,12 @@ public class FloatingService extends Service {
                 400));
         floating.setKeepScreenOn(true);
 
-        int floatingLayoutParamsType = TYPE_APPLICATION_OVERLAY;
+        int floatingLayoutParamsType = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            floatingLayoutParamsType = TYPE_PHONE;
+            floatingLayoutParamsType = WindowManager.LayoutParams.TYPE_PHONE;
         }
         final WindowManager.LayoutParams floatingParams = new WindowManager.LayoutParams(
-                MainActivity.getSize(this), MainActivity.getSize(this), floatingLayoutParamsType,
+                MainActivity.getSize(), MainActivity.getSize(), floatingLayoutParamsType,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
                         WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN |
                         WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR |
@@ -115,10 +145,10 @@ public class FloatingService extends Service {
 
 
         //---SCREEN OVERLAY---
-        int screenLayoutParamsType = TYPE_APPLICATION_OVERLAY;
+        int screenLayoutParamsType = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            screenLayoutParamsType = TYPE_PHONE;
-            screenLayoutParamsType = TYPE_SYSTEM_OVERLAY;
+            screenLayoutParamsType = WindowManager.LayoutParams.TYPE_PHONE;
+            screenLayoutParamsType = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
         }
 
         screen = new LinearLayout(this);
@@ -149,10 +179,10 @@ public class FloatingService extends Service {
 
 
         //---TOUCH---
-        int touchLayoutParamsType = TYPE_APPLICATION_OVERLAY;
+        int touchLayoutParamsType = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            touchLayoutParamsType = TYPE_SYSTEM_OVERLAY;
-            touchLayoutParamsType = TYPE_PHONE;
+            touchLayoutParamsType = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+            touchLayoutParamsType = WindowManager.LayoutParams.TYPE_PHONE;
         }
 
         touch = new LinearLayout(this);
@@ -204,6 +234,14 @@ public class FloatingService extends Service {
                             floating.setVisibility(View.GONE);
                             screen.setVisibility(View.VISIBLE);
                             touch.setVisibility(View.VISIBLE);
+
+                            fullScreenOpened = System.currentTimeMillis();
+                            if (MainActivity.isAutoLocking()) {
+                                int min = MainActivity.getLockTime() % 60;
+                                int hour = (MainActivity.getLockTime() - min) / 60;
+
+                                Toast.makeText(App.getAppContext(), String.format(getString(R.string.auto_lock_set), hour, min), Toast.LENGTH_LONG).show();
+                            }
                         }
                         lastTouch = currentTime;
 
@@ -228,31 +266,7 @@ public class FloatingService extends Service {
                 return false;
             }
         });
-        touch.setOnTouchListener(new View.OnTouchListener() {
-            long lastTouch = 0;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-
-                        long currentTime = System.currentTimeMillis();
-                        if (lastTouch  + 500 > currentTime) {
-                            floating.setVisibility(View.VISIBLE);
-                            screen.setVisibility(View.GONE);
-                            touch.setVisibility(View.GONE);
-                        }
-                        lastTouch = currentTime;
-
-                        break;
-                    default:
-                        break;
-                }
-
-                return false;
-            }
-        });
+        touch.setOnTouchListener(touchListener);
         floating.setOnKeyListener(cancelKey);
         screen.setOnKeyListener(cancelKey);
         touch.setOnKeyListener(cancelKey);
@@ -300,44 +314,23 @@ public class FloatingService extends Service {
         wm.removeView(touchBackup);
         wm.addView(touch, touchLayoutParams);
 
-        touch.setOnTouchListener(new View.OnTouchListener() {
-            long lastTouch = 0;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-
-                        long currentTime = System.currentTimeMillis();
-                        if (lastTouch  + 500 > currentTime) {
-                            floating.setVisibility(View.VISIBLE);
-                            screen.setVisibility(View.GONE);
-                            touch.setVisibility(View.GONE);
-                        }
-                        lastTouch = currentTime;
-
-                        break;
-                    default:
-                        break;
-                }
-
-                return false;
-            }
-        });
+        touch.setOnTouchListener(touchListener);
     }
 
     private void drawCircle(ImageView imageView) {
-        int size = MainActivity.getSize(this);
+        int size = MainActivity.getSize();
         Bitmap map = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
 
         Paint main = new Paint(0);
         main.setStyle(Paint.Style.FILL);
         main.setColor(FloatingService.getColor());
-
+        Paint stroke = new Paint(0);
+        stroke.setStyle(Paint.Style.STROKE);
+        stroke.setColor(Color.WHITE);
 
         Canvas c = new Canvas(map);
         c.drawCircle(size/2, size/2, size/2, main);
+        c.drawCircle(size/2, size/2, size/2, stroke);
 
         imageView.setImageBitmap(map);
     }
@@ -375,7 +368,7 @@ public class FloatingService extends Service {
     }
 
     private void createCallReceiver() {
-        receiver = new PhonecallReceiver() {
+        receiver = new PhoneCallReceiver() {
             @Override
             protected void onIncomingCallReceived(Context ctx, String number, Date start) {
                 floating.setVisibility(View.VISIBLE);
@@ -404,7 +397,7 @@ public class FloatingService extends Service {
     }
 
     //https://stackoverflow.com/questions/15563921/how-to-detect-incoming-calls-in-an-android-device
-    public abstract static class PhonecallReceiver extends BroadcastReceiver {
+    public abstract static class PhoneCallReceiver extends BroadcastReceiver {
 
         //The receiver will be recreated whenever android feels like it.  We need a static variable to remember data between instantiations
 
