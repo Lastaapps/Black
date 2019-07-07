@@ -1,18 +1,25 @@
 package cz.lastaapps.black.autolock;
 
 import android.app.Activity;
+import android.app.KeyguardManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.PowerManager;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import cz.lastaapps.black.App;
 import cz.lastaapps.black.R;
+import cz.lastaapps.black.TurnScreenOn;
 
 public class LockPermissionActivity extends Activity {
     protected static final int REQUEST_ENABLE = 0;
@@ -63,9 +70,23 @@ public class LockPermissionActivity extends Activity {
     public static void lock() {
         if (isLockEnabled()) {
             devicePolicyManager.lockNow();
+            new Handler(Looper.myLooper()).postDelayed(() -> {
+                    TurnScreenOn.turnScreenOn();
+                    }
+                , 500);
+
         } else {
             Toast.makeText(App.getAppContext(), R.string.could_not_lock, Toast.LENGTH_LONG).show();
         }
+    }
+
+    public static boolean isLocked() {
+        KeyguardManager myKM = (KeyguardManager) App.getAppContext()
+                .getSystemService(Context.KEYGUARD_SERVICE);
+        if (Build.VERSION.SDK_INT < 16)
+            return myKM.isKeyguardLocked();
+        else
+            return myKM.inKeyguardRestrictedInputMode();
     }
 
     public static void enableActivity() {

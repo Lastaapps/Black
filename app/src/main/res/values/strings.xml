@@ -14,22 +14,24 @@
     <string name="close">Double tap to close</string>
 
     <string name="version">Version</string>
-    <string name="company_name">Lašťa apps</string>
+    <string name="company_name" translatable="false">Lašťa apps</string>
 
-    <string name="auto_lock">Lock the phone when leaving fullscreen mode after selected amount of time</string>
+    <string name="auto_lock">Lock the phone when leaving fullscreen after the selected amount of time</string>
     <string name="permission_admin">To lock your screen we need to grand system admin permission</string>
     <string name="could_not_lock">Could not lock the phone, admin disabled</string>
-    <string name="time_picker">Set the time after witch the phone will lock</string>
+    <string name="time_picker">Set the time after witch the phone will locked</string>
     <string name="auto_lock_set">Auto lock is set to %d hours %d minutes</string>
 
     <string-array name="advices">
+        <item>Scroll down in this list to get more useful tips!</item>
         <item>Select the ring below to change color</item>
-        <item>Press start service to start overlapping display, tap 2x to expand to whole screen</item>
-        <item>Press start in app to use it as temporary background</item>
+        <item>Press \'start service\' to start overlapping display, tap 2x to expand to whole screen</item>
+        <item>Press \'start in app\' to fill entire screen</item>
         <item>If the app isn\'t working correctly, please let me know on Facebook below</item>
-        <item>This app can drain your battery when using LCD display. Please make sure, that you have OLED.</item>
         <item>The phone is NOT locked when the app is in use unless you turn it on manually below!</item>
+        <item>You can have a little ring on your screen when reading so screen will never turn off.</item>
+        <item>This app can drain your battery when using LCD display. Please make sure, that you have OLED.</item>
         <item>You can also use tints in notifications area. Just add it from button list.</item>
-        <item>To prevent burning OLED displays, do not let any color (except black) on the screen for a longer period of time</item>
+        <item>To prevent burning OLED displays, do not let any color (except black) on the screen for longer periods of time</item>
     </string-array>
 </resources>

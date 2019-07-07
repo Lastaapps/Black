@@ -17,7 +17,6 @@
     <view
         android:id="@+id/time_picker"
         class="android.widget.TimePicker"
-        id="@+id/view2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

@@ -2,7 +2,6 @@ package cz.lastaapps.black;
 
 import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -25,9 +25,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -39,10 +37,8 @@ import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
-import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 import cz.lastaapps.black.autolock.LockPermissionActivity;
 
@@ -52,7 +48,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String SF_AUTO_LOCK = "AUTO_LOCK";
     private static final String SF_LOCK_TIME = "LOCK_TIME";
 
-    TextView advices, info, label;
+    public static final long DOUBLE_CLICK_TIMEOUT = 250;
+    public static final int DOUBLE_CLICK_RANGE = 100;//in fact, it will be 2x bigger
+
     SwitchCompat lockSwitcher;
 
     @Override
@@ -357,12 +355,12 @@ public class MainActivity extends AppCompatActivity {
         main.setStyle(Paint.Style.FILL);
         main.setColor(FloatingService.getColor());
 
-        Paint circ = new Paint(0);
-        circ.setStyle(Paint.Style.FILL);
-        circ.setColor(Color.WHITE);
+        Paint circle = new Paint(0);
+        circle.setStyle(Paint.Style.FILL);
+        circle.setColor(Color.WHITE);
 
         Canvas c = new Canvas(map);
-        c.drawCircle(rSize/2, rSize/2, rSize/2, circ);
+        c.drawCircle(rSize/2, rSize/2, rSize/2, circle);
         c.drawCircle(rSize/2, rSize/2, rSize/2 - (rSize/8), main);
 
         ((ImageView)findViewById(R.id.color_circle)).setImageBitmap(map);
@@ -384,6 +382,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    public static void playUnlockSound() {
+        MediaPlayer player = MediaPlayer.create(App.getAppContext(), R.raw.s3_unlock);
+        player.start();
     }
 
     public static Point getScreenSize(Context context) {
@@ -415,7 +418,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void setLockTime(int time) {
-        if (time <= 0) time = 1;
+        if (time < 0) time = 0;
         App.getAppContext().getSharedPreferences("data", Context.MODE_PRIVATE).edit()
                 .putInt(SF_LOCK_TIME, time)
                 .apply();

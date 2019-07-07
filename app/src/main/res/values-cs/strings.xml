@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Černo</string>
+    <string name="auto_lock">Zamnknout telefon při opuštění celoobrazovkového režimu</string>
+    <string name="auto_lock_set">Automatické zamknutí je nastaveno na %d hodin a %d minut</string>
+    <string name="chose_color">Zvolte barvu</string>
+    <string name="close">Dvojkliken zavřete</string>
+    <string name="could_not_lock">Nelze zamknout telefon, potřebujeme administrátorské oprávnění</string>
+    <string name="expand">Dvojklikem zvětšíte/zavřete</string>
+    <string name="got_it">Jasně!</string>
+    <string name="permission_admin">Abychom mohly zamknout telefon, potřebujeme administrátorské oprávnění</string>
+    <string name="permission_overlay">Abychom mohli překrývat display, potřebujeme udělit patřičné oprávnění, takže si nás ani Youtube nevšimne</string>
+    <string name="start">Spustit službu</string>
+    <string name="startAsActivity">Spustit v aplikaci</string>
+    <string name="stop">Ukončit službu</string>
+    <string name="tile_name">Tma</string>
+    <string name="time_picker">Nastavte čas, po kterém se zařízení samo zamnkne</string>
+    <string name="version">Verze</string>
+</resources>

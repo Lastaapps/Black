@@ -16,7 +16,7 @@ public class MyTileService  extends android.service.quicksettings.TileService {
                 R.drawable.icon));
         tile.setLabel(getString(R.string.tile_name));
         tile.setContentDescription(
-                "shows black over whole screen"/*getString(R.string.tile_content_description)*/);
+                "shows your selected color over whole screen"/*getString(R.string.tile_content_description)*/);
         tile.updateTile();
     }
 
@@ -38,7 +38,7 @@ public class MyTileService  extends android.service.quicksettings.TileService {
 
         Intent intent = new Intent(this, FloatingService.class);
 
-        if (tile.getState() == Tile.STATE_ACTIVE) {
+        if (!MainActivity.isMyServiceRunning(FloatingService.class)) {
             startService(intent);
         } else if (tile.getState() == Tile.STATE_INACTIVE) {
             stopService(intent);
